@@ -54,7 +54,7 @@ public class App
     	Dataset<Row> switchedEdges = edgeDF.withColumnRenamed("src", "dst1");
     	switchedEdges = switchedEdges.withColumnRenamed("dst", "src");
     	switchedEdges = switchedEdges.withColumnRenamed("dst1", "dst");
-    	edgeDF.union(switchedEdges);
+    	edgeDF = edgeDF.union(switchedEdges);
     	
     	// Remove duplicate rows
     	vertexDF = vertexDF.distinct();
