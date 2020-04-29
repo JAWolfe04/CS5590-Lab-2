@@ -1,7 +1,5 @@
 package lab2.part4;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.Metadata;
@@ -40,12 +38,17 @@ public class App
     	Dataset<Row> vertexDF = spark.read().option("header", "true").schema(vertexSchema)
     			.csv("C:\\Users\\Jonathan\\Desktop\\UMKC\\CS 5590\\Labs\\CS5590-Lab-2\\Part_4\\Input\\meta-groups.csv");
     	
-    	edgeDF = edgeDF.select("group1", "group2", "weight");
+    	edgeDF = edgeDF.select("group1", "group2");
     	vertexDF = vertexDF.select("group_id", "group_name", "num_members");
     	
     	edgeDF = edgeDF.withColumnRenamed("group1", "src");
     	edgeDF = edgeDF.withColumnRenamed("group2", "dst");
     	vertexDF = vertexDF.withColumnRenamed("group_id", "id");
+    	
+    	Dataset<Row> switchedEdges = edgeDF.withColumnRenamed("src", "dst1");
+    	switchedEdges = switchedEdges.withColumnRenamed("dst", "src");
+    	switchedEdges = switchedEdges.withColumnRenamed("dst1", "dst");
+    	edgeDF.union(switchedEdges);
     	
     	vertexDF = vertexDF.distinct();
     	edgeDF = edgeDF.distinct();
